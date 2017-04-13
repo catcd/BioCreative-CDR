@@ -21,6 +21,7 @@ import edu.ktlab.bionlp.cdr.nlp.rel.feature.FeatureGenerator;
 import edu.ktlab.bionlp.cdr.nlp.rel.feature.FeatureSet;
 import edu.ktlab.bionlp.cdr.util.FileHelper;
 import edu.stanford.nlp.util.Pair;
+//TODO CATCAN Relation
 
 public class CIDRelationTrainer {
 	@SuppressWarnings("unchecked")

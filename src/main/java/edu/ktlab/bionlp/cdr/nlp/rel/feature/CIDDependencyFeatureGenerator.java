@@ -12,7 +12,7 @@ import edu.stanford.nlp.ling.IndexedWord;
 import edu.stanford.nlp.semgraph.SemanticGraph;
 import edu.stanford.nlp.semgraph.SemanticGraphEdge;
 import edu.stanford.nlp.util.Pair;
-
+// TODO CATCAN Dependency tree
 public class CIDDependencyFeatureGenerator implements FeatureGenerator<Pair<Annotation, Annotation>, Sentence> {
 	public ArrayList<String> extractFeatures(Pair<Annotation, Annotation> pair, Sentence sentence) {
 		ArrayList<String> featureCollector = new ArrayList<String>();

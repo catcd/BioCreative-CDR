@@ -113,4 +113,17 @@ public class Passage {
 		
 		return rels;
 	}
+
+	@Override
+	public String toString() {
+		return "{" +
+				"startOffset=" + startOffset +
+				", endOffset=" + endOffset +
+				", type='" + type + '\'' +
+				", content='" + content + '\'' +
+				", sentences=" + sentences +
+				", annotations=" + annotations +
+				", relations=" + relations +
+				'}';
+	}
 }

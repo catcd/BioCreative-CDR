@@ -134,4 +134,15 @@ public class Document {
 			}
 		return refs;
 	}
+	
+	@Override
+	public String toString() {
+		return "{" +
+				"pmid='" + pmid + '\'' +
+				", passages=" + passages +
+				", annotations=" + annotations +
+				", relations=" + relations +
+				", extractAbbrev=" + extractAbbrev +
+				'}';
+	}
 }

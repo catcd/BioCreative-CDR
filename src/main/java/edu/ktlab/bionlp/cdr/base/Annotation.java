@@ -126,8 +126,14 @@ public class Annotation {
 
 	@Override
 	public String toString() {
-		return "Annotation [startOffset=" + startBaseOffset + ", endOffset=" + endBaseOffset + ", content=" + content
-				+ ", type=" + type + ", reference=" + reference + ", tokens=" + tokens + "]";
+		return "{" +
+				"startBaseOffset=" + startBaseOffset +
+				", endBaseOffset=" + endBaseOffset +
+				", content='" + content + '\'' +
+				", type='" + type + '\'' +
+				", reference='" + reference + '\'' +
+				", tokens=" + tokens +
+				'}';
 	}
 
 	public String getTokenizedLabel2OpenNLPFormat() {

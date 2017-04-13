@@ -39,11 +39,6 @@ public class Relation {
 	}
 
 	@Override
-	public String toString() {
-		return "Relation [id=" + id + ", chemicalID=" + chemicalID + ", diseaseID=" + diseaseID + "]";
-	}
-
-	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
@@ -86,5 +81,14 @@ public class Relation {
 
 	public boolean equals(String relation) {
 		return (this.chemicalID + " " + this.diseaseID).equals(relation);
+	}
+
+	@Override
+	public String toString() {
+		return "{" +
+				"id='" + id + '\'' +
+				", chemicalID='" + chemicalID + '\'' +
+				", diseaseID='" + diseaseID + '\'' +
+				'}';
 	}
 }

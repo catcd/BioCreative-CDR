@@ -59,7 +59,11 @@ public class Text {
 
 	@Override
 	public String toString() {
-		return "Document [text=" + content + ", tokens=" + Arrays.toString(tokens) + ", tokenize="
-				+ isTokenize + ", annotations=" + annotations + "]";
+		return "{" +
+				"content='" + content + '\'' +
+				", tokens=" + Arrays.toString(tokens) +
+				", isTokenize=" + isTokenize +
+				", annotations=" + annotations +
+				'}';
 	}
 }

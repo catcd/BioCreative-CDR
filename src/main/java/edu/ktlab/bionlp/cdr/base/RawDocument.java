@@ -48,4 +48,14 @@ public class RawDocument {
 	public void setRelations(Set<Relation> relations) {
 		this.relations = relations;
 	}
+	
+	@Override
+	public String toString() {
+		return "{" +
+				"pmid='" + pmid + '\'' +
+				", title='" + title + '\'' +
+				", summary='" + summary + '\'' +
+				", relations=" + relations +
+				'}';
+	}
 }

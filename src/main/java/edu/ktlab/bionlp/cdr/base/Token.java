@@ -87,8 +87,14 @@ public class Token {
 
 	@Override
 	public String toString() {
-		return "Token [id=" + id + ", content=" + content + ", longForm=" + longForm + ", startBaseOffset="
-				+ startBaseOffset + ", endBaseOffset=" + endBaseOffset + ", startTokenizedOffset="
-				+ startTokenizedOffset + ", endTokenizedOffset=" + endTokenizedOffset + "]";
+		return "{" +
+				"id=" + id +
+				", content='" + content + '\'' +
+				", longForm='" + longForm + '\'' +
+				", startBaseOffset=" + startBaseOffset +
+				", endBaseOffset=" + endBaseOffset +
+				", startTokenizedOffset=" + startTokenizedOffset +
+				", endTokenizedOffset=" + endTokenizedOffset +
+				'}';
 	}
 }

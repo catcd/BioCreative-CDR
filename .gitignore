@@ -1,0 +1,5 @@
+data/cdr_full/cdr_full
+.idea/
+.settings/
+
+/target/

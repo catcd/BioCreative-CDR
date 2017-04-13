@@ -79,8 +79,14 @@ public class TextAnnotation {
 
 	@Override
 	public String toString() {
-		return "Annotation [text=" + text + ", fromToken=" + fromToken + ", toToken=" + toToken
-				+ ", fromOffset=" + fromOffset + ", toOffset=" + toOffset + ", type=" + type
-				+ ", source=" + source + "]";
+		return "{" +
+				"text='" + text + '\'' +
+				", fromToken=" + fromToken +
+				", toToken=" + toToken +
+				", fromOffset=" + fromOffset +
+				", toOffset=" + toOffset +
+				", type='" + type + '\'' +
+				", source='" + source + '\'' +
+				'}';
 	}
 }

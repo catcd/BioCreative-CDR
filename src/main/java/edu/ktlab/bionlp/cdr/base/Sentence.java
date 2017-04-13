@@ -183,7 +183,13 @@ public class Sentence {
 
 	@Override
 	public String toString() {
-		return "Sentence [startOffset=" + startOffset + ", endOffset=" + endOffset + ", content=" + content
-				+ ", annotations=" + annotations + ", tokens=" + tokens + "]";
+		return "{" +
+				"startOffset=" + startOffset +
+				", endOffset=" + endOffset +
+				", content='" + content + '\'' +
+				", annotations=" + annotations +
+				", tokens=" + tokens +
+				", deptree='" + deptree + '\'' +
+				'}';
 	}
 }
