@@ -88,13 +88,13 @@ public class Token {
 	@Override
 	public String toString() {
 		return "{" +
-				"id=" + id +
-				", content='" + content + '\'' +
-				", longForm='" + longForm + '\'' +
-				", startBaseOffset=" + startBaseOffset +
-				", endBaseOffset=" + endBaseOffset +
-				", startTokenizedOffset=" + startTokenizedOffset +
-				", endTokenizedOffset=" + endTokenizedOffset +
+				"'id'=" + id +
+				", 'content'='" + content + '\'' +
+				", 'longForm'='" + longForm + '\'' +
+				", 'startBaseOffset'=" + startBaseOffset +
+				", 'endBaseOffset'=" + endBaseOffset +
+				", 'startTokenizedOffset'=" + startTokenizedOffset +
+				", 'endTokenizedOffset'=" + endTokenizedOffset +
 				'}';
 	}
 }

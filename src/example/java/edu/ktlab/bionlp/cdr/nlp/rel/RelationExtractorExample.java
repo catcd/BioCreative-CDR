@@ -26,11 +26,19 @@ public class RelationExtractorExample {
 		Collection col = CollectionFactory.loadJsonFile(fileCorpus);
 
 		File []fs = {
-		              new File("/home/catcan/Desktop/data/cdr_full_parsed"),
-		              new File("/home/catcan/Desktop/data/cdr_full_related_directed"),
-		              new File("/home/catcan/Desktop/data/cdr_full_not_related_directed"),
-		              new File("/home/catcan/Desktop/data/cdr_full_related_undirected"),
-		              new File("/home/catcan/Desktop/data/cdr_full_not_related_undirected")
+	              new File("/home/catcan/Desktop/data/cdr.directed.tag"),
+	              new File("/home/catcan/Desktop/data/cdr.directed.value"),
+	              new File("/home/catcan/Desktop/data/cdr.undirected.tag"),
+	              new File("/home/catcan/Desktop/data/cdr.undirected.value"),
+	              new File("/home/catcan/Desktop/data/cdr.directed.tag.pos"),
+	              new File("/home/catcan/Desktop/data/cdr.directed.value.pos"),
+	              new File("/home/catcan/Desktop/data/cdr.undirected.tag.pos"),
+	              new File("/home/catcan/Desktop/data/cdr.undirected.value.pos"),
+	              new File("/home/catcan/Desktop/data/cdr.directed.tag.neg"),
+	              new File("/home/catcan/Desktop/data/cdr.directed.value.neg"),
+	              new File("/home/catcan/Desktop/data/cdr.undirected.tag.neg"),
+	              new File("/home/catcan/Desktop/data/cdr.undirected.value.neg"),
+	              new File("/home/catcan/Desktop/data/cdr.parse")
 		};
 		
 		for (File f : fs) {
@@ -39,11 +47,20 @@ public class RelationExtractorExample {
 			}
 		}
 
-		FileWriter parsed = new FileWriter(fs[0]);
-		FileWriter relatedDirected = new FileWriter(fs[1]);
-		FileWriter notRelatedDirected = new FileWriter(fs[2]);
-		FileWriter relatedUndirected = new FileWriter(fs[3]);
-		FileWriter notRelatedUndirected = new FileWriter(fs[4]);
+		FileWriter FR = new FileWriter(fs[0]);
+		FileWriter FRV = new FileWriter(fs[1]);
+		FileWriter FRU = new FileWriter(fs[2]);
+		FileWriter FRUV = new FileWriter(fs[3]);
+		FileWriter FR_P = new FileWriter(fs[4]);
+		FileWriter FRV_P = new FileWriter(fs[5]);
+		FileWriter FRU_P = new FileWriter(fs[6]);
+		FileWriter FRUV_P = new FileWriter(fs[7]);
+		FileWriter FR_N = new FileWriter(fs[8]);
+		FileWriter FRV_N = new FileWriter(fs[9]);
+		FileWriter FRU_N = new FileWriter(fs[10]);
+		FileWriter FRUV_N = new FileWriter(fs[11]);
+		
+		FileWriter parsed = new FileWriter(fs[12]);
 
 		for (Document doc : col.getDocuments()) {
 			Set<Relation> candidateRels = doc.getRelationCandidates();
@@ -85,30 +102,75 @@ public class RelationExtractorExample {
 										continue;
 
 									List<SemanticGraphEdge> shortestPathEdges = semgraph.getShortestUndirectedPathEdges(idxTokenChed, idxTokenDis);
+
 									String r = "";
+									String rR = "";
+									String rV = "";
+									String rRV = "";
 									String rUndirected = "";
+									String rUndirectedR = "";
+									String rUndirectedV = "";
+									String rUndirectedRV = "";
 									IndexedWord next = idxTokenChed;
 									for(SemanticGraphEdge edge : shortestPathEdges) {
 										r += next + " ";
+										rR = " " + next + rR;
+										rV += next.value() + " ";
+										rRV = " " + next.value() + rRV;
 										rUndirected += next + " ";
+										rUndirectedR = " " + next + rUndirectedR;
+										rUndirectedV += next.value() + " ";
+										rUndirectedRV = " " + next.value() + rUndirectedRV;
 										if (edge.getSource().equals(next)) {
 											r += "-ARR- (" + edge.getRelation() + ") ";
+											rR = " -ARL- (" + edge.getRelation() + ")" + rR;
+											rV += "-ARR- (" + edge.getRelation() + ") ";
+											rRV = " -ARL- (" + edge.getRelation() + ")" + rRV;
 											rUndirected += "(" + edge.getRelation() + ") ";
+											rUndirectedR = " (" + edge.getRelation() + ")" + rUndirectedR;
+											rUndirectedV += "(" + edge.getRelation() + ") ";
+											rUndirectedRV = " (" + edge.getRelation() + ")" + rUndirectedRV;
 											next = edge.getTarget();
 										} else {
 											r += "-ARL- (" + edge.getRelation() + ") ";
+											rR = " -ARR- (" + edge.getRelation() + ")" + rR;
+											rV += "-ARL- (" + edge.getRelation() + ") ";
+											rRV = " -ARR- (" + edge.getRelation() + ")" + rRV;
 											rUndirected += "(" + edge.getRelation() + ") ";
+											rUndirectedR = " (" + edge.getRelation() + ")" + rUndirectedR;
+											rUndirectedV += "(" + edge.getRelation() + ") ";
+											rUndirectedRV = " (" + edge.getRelation() + ")" + rUndirectedRV;
 											next = edge.getSource();
 										}
 									}
 									r += next;
+									rR = next + rR;
+									rV += next.value();
+									rRV = next.value() + rRV;
 									rUndirected += next;
+									rUndirectedR = next + rUndirectedR;
+									rUndirectedV += next.value();
+									rUndirectedRV = next.value() + rUndirectedRV;
+									
+									FR.write(r + '\n');
+									FR.write(rR + '\n');
+									FRV.write(rV + '\n');
+									FRV.write(rRV + '\n');
+									FRU.write(rUndirected + '\n');
+									FRU.write(rUndirectedR + '\n');
+									FRUV.write(rUndirectedV + '\n');
+									FRUV.write(rUndirectedRV + '\n');
+									
 									if (label.equals("CID")) {
-										relatedDirected.write(r + "\n");
-										relatedUndirected.write(rUndirected + "\n");
+										FR_P.write(r + '\n');
+										FRV_P.write(rV + '\n');
+										FRU_P.write(rUndirected + '\n');
+										FRUV_P.write(rUndirectedV + '\n');
 									} else {
-										notRelatedDirected.write(r + "\n");
-										notRelatedUndirected.write(rUndirected + "\n");
+										FR_N.write(r + '\n');
+										FRV_N.write(rV + '\n');
+										FRU_N.write(rUndirected + '\n');
+										FRUV_N.write(rUndirectedV + '\n');
 									}
 								}
 							}
@@ -117,11 +179,20 @@ public class RelationExtractorExample {
 				}
 			}
 		}
-		
+
+		FR.close();
+		FRV.close();
+		FRU.close();
+		FRUV.close();
+		FR_P.close();
+		FRV_P.close();
+		FRU_P.close();
+		FRUV_P.close();
+		FR_N.close();
+		FRV_N.close();
+		FRU_N.close();
+		FRUV_N.close();
+		        
 		parsed.close();
-		relatedDirected.close();
-		notRelatedDirected.close();
-		relatedUndirected.close();
-		notRelatedUndirected.close();
 	}
 }

@@ -127,12 +127,12 @@ public class Annotation {
 	@Override
 	public String toString() {
 		return "{" +
-				"startBaseOffset=" + startBaseOffset +
-				", endBaseOffset=" + endBaseOffset +
-				", content='" + content + '\'' +
-				", type='" + type + '\'' +
-				", reference='" + reference + '\'' +
-				", tokens=" + tokens +
+				"'startBaseOffset'=" + startBaseOffset +
+				", 'endBaseOffset'=" + endBaseOffset +
+				", 'content'='" + content + '\'' +
+				", 'type'='" + type + '\'' +
+				", 'reference'='" + reference + '\'' +
+				", 'tokens'=" + tokens +
 				'}';
 	}
 

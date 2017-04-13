@@ -7,7 +7,7 @@ import edu.ktlab.bionlp.cdr.nlp.tokenizer.TokenizerMESingleton;
 
 public class MaxentNERRecognizerExample {
 	public static void main(String[] args) throws Exception {
-		CDRNERRecognizer nerFinder = new CDRNERRecognizer("models/ner/vntrans.model",
+		CDRNERRecognizer nerFinder = new CDRNERRecognizer("models/ner/cdr_full.perc.model",
 				MaxentNERFactoryExample.createFeatureGenerator());
 		System.out.print("Enter your sentence: ");
 		Scanner scan = new Scanner(System.in);
@@ -18,11 +18,13 @@ public class MaxentNERRecognizerExample {
 				break;
 			}
 			String[] tokens = TokenizerMESingleton.getInstance().tokenize(text);
+			for (String tok : tokens) {
+				System.out.println(tok);
+			}
 			String output = nerFinder.recognize(tokens);
 			System.out.println(output);
 			System.out.print("Enter your sentence: ");
 		}
 		scan.close();
 	}
-
 }

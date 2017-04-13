@@ -48,121 +48,129 @@ public class CDRParseData {
 		FileWriter FRV = new FileWriter(fs[1]);
 		FileWriter FRU = new FileWriter(fs[2]);
 		FileWriter FRUV = new FileWriter(fs[3]);
+		int abtCount = 0;
+		int stmCount = 0;
 		
-		FileReader fr = new FileReader("/home/catcan/GitProjects/word_embedding_trainer/data/pubmed_text_only/efetch_1.txt");
-		BufferedReader br = new BufferedReader(fr);
-
-		String anAbs;
-		while ((anAbs = br.readLine()) != null) {
-			int offset = 0;
-			Document doc = new Document();
-			Passage passage = new Passage();
-			passage.setType("abstract");
-			passage.setStartOffset(offset);
-			passage.setEndOffset(offset + anAbs.length());
-			passage.setContent(anAbs);
-			Span[] sentSpans = splitter.senPosSplit(anAbs);
-			
-			for (Span span : sentSpans) {
-				Sentence sent = new Sentence();
-				sent.setStartOffset(passage.getStartOffset() + span.getStart());
-				sent.setEndOffset(passage.getStartOffset() + span.getEnd());
-				String content = anAbs.substring(span.getStart(), span.getEnd());
-				sent.setContent(content);
-				String[] tokens = tokenizer.tokenize(content);
-				
-				Tree tree = parser.parseStrings(DependencyHelper.transform(tokens));
-				sent.setDeptree(tree.toString());
+		for (int x = 19; x <= 999; ++x) {
+			FileReader fr = new FileReader("/home/catcan/GitProjects/word_embedding_trainer/data/pubmed_text_only/efetch_" + x + ".txt");
+			BufferedReader br = new BufferedReader(fr);
 	
-				sent.setTokens(tokens);
-				passage.addSentence(sent);
-			}
-			doc.addPassage(passage);
-			
-			for (Sentence sentence : doc.getSentences()) {
-				SemanticGraph semgraph = DependencyHelper.convertSemanticGraph(sentence.getDeptree());
+			String anAbs;
+			while ((anAbs = br.readLine()) != null) {
+				++abtCount;
+				int offset = 0;
+				Document doc = new Document();
+				Passage passage = new Passage();
+				passage.setType("abstract");
+				passage.setStartOffset(offset);
+				passage.setEndOffset(offset + anAbs.length());
+				passage.setContent(anAbs);
+				Span[] sentSpans = splitter.senPosSplit(anAbs);
 				
-				List<IndexedWord> edgeList = semgraph.vertexListSorted();
-				int edgeCount = edgeList.size();
-				
-				for (int i = 0; i < edgeCount - 1; ++i) {
-					IndexedWord token1 = edgeList.get(i);
-					if (dropout(token1)) continue;
+				for (Span span : sentSpans) {
+					Sentence sent = new Sentence();
+					sent.setStartOffset(passage.getStartOffset() + span.getStart());
+					sent.setEndOffset(passage.getStartOffset() + span.getEnd());
+					String content = anAbs.substring(span.getStart(), span.getEnd());
+					sent.setContent(content);
+					String[] tokens = tokenizer.tokenize(content);
 					
-					for (int j = i + 1; j < edgeCount; ++j) {
-						IndexedWord token2 = edgeList.get(j);
-						if (dropout(token2)) continue;
-						
-						List<SemanticGraphEdge> shortestPathEdges = semgraph.getShortestUndirectedPathEdges(token1, token2);
-						if (shortestPathEdges.size() <= 2) continue;
+					Tree tree = parser.parseStrings(DependencyHelper.transform(tokens));
+					sent.setDeptree(tree.toString());
 		
-						String r = "";
-						String rR = "";
-						String rV = "";
-						String rRV = "";
-						String rUndirected = "";
-						String rUndirectedR = "";
-						String rUndirectedV = "";
-						String rUndirectedRV = "";
-						IndexedWord next = token1;
-						for(SemanticGraphEdge edge : shortestPathEdges) {
-							r += next + " ";
-							rR = " " + next + rR;
-							rV += next.value() + " ";
-							rRV = " " + next.value() + rRV;
-							rUndirected += next + " ";
-							rUndirectedR = " " + next + rUndirectedR;
-							rUndirectedV += next.value() + " ";
-							rUndirectedRV = " " + next.value() + rUndirectedRV;
-							if (edge.getSource().equals(next)) {
-								r += "-ARR- (" + edge.getRelation() + ") ";
-								rR = " -ARL- (" + edge.getRelation() + ")" + rR;
-								rV += "-ARR- (" + edge.getRelation() + ") ";
-								rRV = " -ARL- (" + edge.getRelation() + ")" + rRV;
-								rUndirected += "(" + edge.getRelation() + ") ";
-								rUndirectedR = " (" + edge.getRelation() + ")" + rUndirectedR;
-								rUndirectedV += "(" + edge.getRelation() + ") ";
-								rUndirectedRV = " (" + edge.getRelation() + ")" + rUndirectedRV;
-								next = edge.getTarget();
-							} else {
-								r += "-ARL- (" + edge.getRelation() + ") ";
-								rR = " -ARR- (" + edge.getRelation() + ")" + rR;
-								rV += "-ARL- (" + edge.getRelation() + ") ";
-								rRV = " -ARR- (" + edge.getRelation() + ")" + rRV;
-								rUndirected += "(" + edge.getRelation() + ") ";
-								rUndirectedR = " (" + edge.getRelation() + ")" + rUndirectedR;
-								rUndirectedV += "(" + edge.getRelation() + ") ";
-								rUndirectedRV = " (" + edge.getRelation() + ")" + rUndirectedRV;
-								next = edge.getSource();
-							}
-						}
-						r += next;
-						rR = next + rR;
-						rV += next.value();
-						rRV = next.value() + rRV;
-						rUndirected += next;
-						rUndirectedR = next + rUndirectedR;
-						rUndirectedV += next.value();
-						rUndirectedRV = next.value() + rUndirectedRV;
+					sent.setTokens(tokens);
+					passage.addSentence(sent);
+				}
+				doc.addPassage(passage);
+				
+				for (Sentence sentence : doc.getSentences()) {
+					SemanticGraph semgraph = DependencyHelper.convertSemanticGraph(sentence.getDeptree());
+					if (semgraph == null) continue;
+
+					List<IndexedWord> edgeList = semgraph.vertexListSorted();
+					int edgeCount = edgeList.size();
+					
+					for (int i = 0; i < edgeCount - 1; ++i) {
+						IndexedWord token1 = edgeList.get(i);
+						if (dropout(token1)) continue;
 						
-						FR.write(r + '\n');
-						FR.write(rR + '\n');
-						FRV.write(rV + '\n');
-						FRV.write(rRV + '\n');
-						FRU.write(rUndirected + '\n');
-						FRU.write(rUndirectedR + '\n');
-						FRUV.write(rUndirectedV + '\n');
-						FRUV.write(rUndirectedRV + '\n');
+						for (int j = i + 1; j < edgeCount; ++j) {
+							IndexedWord token2 = edgeList.get(j);
+							if (dropout(token2)) continue;
+							
+							List<SemanticGraphEdge> shortestPathEdges = semgraph.getShortestUndirectedPathEdges(token1, token2);
+							if (shortestPathEdges == null || shortestPathEdges.size() <= 2) continue;
+							++stmCount;
+			
+							String r = "";
+							String rR = "";
+							String rV = "";
+							String rRV = "";
+							String rUndirected = "";
+							String rUndirectedR = "";
+							String rUndirectedV = "";
+							String rUndirectedRV = "";
+							IndexedWord next = token1;
+							for(SemanticGraphEdge edge : shortestPathEdges) {
+								r += next + " ";
+								rR = " " + next + rR;
+								rV += next.value() + " ";
+								rRV = " " + next.value() + rRV;
+								rUndirected += next + " ";
+								rUndirectedR = " " + next + rUndirectedR;
+								rUndirectedV += next.value() + " ";
+								rUndirectedRV = " " + next.value() + rUndirectedRV;
+								if (edge.getSource().equals(next)) {
+									r += "-ARR- (" + edge.getRelation() + ") ";
+									rR = " -ARL- (" + edge.getRelation() + ")" + rR;
+									rV += "-ARR- (" + edge.getRelation() + ") ";
+									rRV = " -ARL- (" + edge.getRelation() + ")" + rRV;
+									rUndirected += "(" + edge.getRelation() + ") ";
+									rUndirectedR = " (" + edge.getRelation() + ")" + rUndirectedR;
+									rUndirectedV += "(" + edge.getRelation() + ") ";
+									rUndirectedRV = " (" + edge.getRelation() + ")" + rUndirectedRV;
+									next = edge.getTarget();
+								} else {
+									r += "-ARL- (" + edge.getRelation() + ") ";
+									rR = " -ARR- (" + edge.getRelation() + ")" + rR;
+									rV += "-ARL- (" + edge.getRelation() + ") ";
+									rRV = " -ARR- (" + edge.getRelation() + ")" + rRV;
+									rUndirected += "(" + edge.getRelation() + ") ";
+									rUndirectedR = " (" + edge.getRelation() + ")" + rUndirectedR;
+									rUndirectedV += "(" + edge.getRelation() + ") ";
+									rUndirectedRV = " (" + edge.getRelation() + ")" + rUndirectedRV;
+									next = edge.getSource();
+								}
+							}
+							r += next;
+							rR = next + rR;
+							rV += next.value();
+							rRV = next.value() + rRV;
+							rUndirected += next;
+							rUndirectedR = next + rUndirectedR;
+							rUndirectedV += next.value();
+							rUndirectedRV = next.value() + rUndirectedRV;
+							
+							FR.write(r + '\n');
+							FR.write(rR + '\n');
+							FRV.write(rV + '\n');
+							FRV.write(rRV + '\n');
+							FRU.write(rUndirected + '\n');
+							FRU.write(rUndirectedR + '\n');
+							FRUV.write(rUndirectedV + '\n');
+							FRUV.write(rUndirectedRV + '\n');
+						}
 					}
 				}
 			}
+			System.out.println(x + " " + abtCount + " " + stmCount);
+			br.close();
 		}
 
 		FR.close();
 		FRV.close();
 		FRU.close();
 		FRUV.close();
-		br.close();
 	}
 
 	private static boolean dropout(IndexedWord token) {
