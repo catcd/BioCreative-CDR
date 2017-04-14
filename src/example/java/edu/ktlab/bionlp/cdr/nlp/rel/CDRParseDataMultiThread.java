@@ -24,6 +24,8 @@ class ParseDep implements Runnable {
 	static SimpleTokenizer tokenizer = SimpleTokenizer.INSTANCE;
 	static LexicalizedParser parser = LexicalizedParser.getParserFromFile(DefaultPaths.DEFAULT_PARSER_MODEL, new Options());
 	
+	static final Object lock = new Object();
+	
 	FileWriter FR;
 	FileWriter FRV;
 	FileWriter FRU;
@@ -49,10 +51,10 @@ class ParseDep implements Runnable {
 	
 	public void run() {
 		System.out.println("Running " +  threadName );
+		int sentCount = 0;
+		int stmCount = 0;
 
 		try {
-			int sentCount = 0;
-			int stmCount = 0;
 			String s;
 			while ((s = br.readLine()) != null) {
 				++sentCount;
@@ -135,14 +137,16 @@ class ParseDep implements Runnable {
 						rUndirectedV += next.value();
 						rUndirectedRV = next.value() + rUndirectedRV;
 						
-						FR.write(r + '\n');
-						FR.write(rR + '\n');
-						FRV.write(rV + '\n');
-						FRV.write(rRV + '\n');
-						FRU.write(rUndirected + '\n');
-						FRU.write(rUndirectedR + '\n');
-						FRUV.write(rUndirectedV + '\n');
-						FRUV.write(rUndirectedRV + '\n');
+						synchronized (lock) {
+							FR.write(r + '\n');
+							FR.write(rR + '\n');
+							FRV.write(rV + '\n');
+							FRV.write(rRV + '\n');
+							FRU.write(rUndirected + '\n');
+							FRU.write(rUndirectedR + '\n');
+							FRUV.write(rUndirectedV + '\n');
+							FRUV.write(rUndirectedRV + '\n');
+						}
 					}
 				}
 				if (sentCount % 100 == 0) {
@@ -152,7 +156,8 @@ class ParseDep implements Runnable {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
+
+		System.out.println(threadName + " (final): " + sentCount + " " + stmCount);
 		System.out.println("Thread " +  threadName + " exiting.");
 		tCount--;
 		if (tCount == 0) {
@@ -216,16 +221,5 @@ public class CDRParseDataMultiThread {
 				
 		ParseDep R4 = new ParseDep("Thread-4", FR, FRV, FRU, FRUV, br);
 		R4.start();
-		  
-		ParseDep R5 = new ParseDep("Thread-5", FR, FRV, FRU, FRUV, br);
-		R3.start();
 	}
 }
-
-
-
-
-
-
-
-
