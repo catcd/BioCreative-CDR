@@ -26,11 +26,11 @@ public class CollectionFactory {
 	static Gson gson = new Gson();
 	static SentSplitterMESingleton splitter = SentSplitterMESingleton.getInstance();
 	static SimpleTokenizer tokenizer = SimpleTokenizer.INSTANCE;
-	static LexicalizedParser parser = null;
-	boolean isParser = false;
+	static LexicalizedParser parser = LexicalizedParser.getParserFromFile(DefaultPaths.DEFAULT_PARSER_MODEL, new Options());
+	static boolean isParser = true;
 	
 	public CollectionFactory(boolean isParser) {
-		this.isParser = isParser;
+		CollectionFactory.isParser = isParser;
 		if (isParser)
 			parser = LexicalizedParser.getParserFromFile(DefaultPaths.DEFAULT_PARSER_MODEL, new Options());
 	}
@@ -57,7 +57,7 @@ public class CollectionFactory {
 		writer.close();
 	}
 
-	public Collection loadFile(String file) {
+	public static Collection loadFile(String file) {
 		Collection collection = new Collection();
 		String[] lines = FileHelper.readFileAsLines(file);
 		Document doc = new Document();
@@ -95,6 +95,7 @@ public class CollectionFactory {
 
 						sent.setTokens(tokens);
 						passage.addSentence(sent);
+						System.out.println(sent);
 					}
 					doc.addPassage(passage);
 					offset = strs[2].length() + 1;

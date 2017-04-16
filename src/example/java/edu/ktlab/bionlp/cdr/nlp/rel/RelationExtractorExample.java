@@ -20,7 +20,7 @@ import edu.stanford.nlp.util.Pair;
 import jersey.repackaged.com.google.common.collect.Lists;
 
 public class RelationExtractorExample {
-	static String fileCorpus = "data/cdr_full/cdr_full.gzip";
+	static String fileCorpus = "data/cdr_test/cdr_test.gzip";
 
 	public static void main(String[] args) throws Exception {
 		Collection col = CollectionFactory.loadJsonFile(fileCorpus);
@@ -67,6 +67,7 @@ public class RelationExtractorExample {
 			List<Sentence> sents = doc.getSentences();
 			for (Sentence sent : sents) {
 				parsed.write("Sentence" + sent + "\n");
+				System.out.println(sent);
 				SemanticGraph semgraph = DependencyHelper.convertSemanticGraph(sent.getDeptree());
 				for (Relation candidateRel : candidateRels) {
 					if (sent.containRelation(candidateRel)) {
